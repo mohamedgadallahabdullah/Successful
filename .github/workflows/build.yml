@@ -1,9 +1,6 @@
 name: Build Kivy APK
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   build:
@@ -13,16 +10,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Buildozer (with fix for PEP 668)
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install --upgrade buildozer --break-system-packages
+      - name: Fix git config issue
+        run: git config --unset http.https://github.com/.extraheader || true
 
-      - name: Build APK
-        run: buildozer android debug
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        env:
+          USER: root
+        with:
+          command: buildozer android debug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MyKivyApp-APK
+          name: my-kivy-app
           path: bin/*.apk
