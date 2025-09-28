@@ -13,12 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build APK with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
+      - name: Install Buildozer (with fix for PEP 668)
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install --upgrade buildozer --break-system-packages
+
+      - name: Build APK
+        run: buildozer android debug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
         with:
-          workdir: .
-          repository_root: .
-          command: buildozer android debug
-        env:
-          BUILDOZER_WARN_ON_ROOT: 0
-          USER: root   # 👈 هنا التغيير المهم
+          name: MyKivyApp-APK
+          path: bin/*.apk
