@@ -1,6 +1,8 @@
 name: Build Kivy APK
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
@@ -10,16 +12,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fix git config issue
-        run: git config --unset http.https://github.com/.extraheader || true
+      - name: Set up Docker Buildozer
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/home/user/app \
+            kivy/buildozer:latest \
+            buildozer -v android debug
 
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        with:
-          command: buildozer android debug
-
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: my-kivy-app
+          name: mykivyapp-apk
           path: bin/*.apk
