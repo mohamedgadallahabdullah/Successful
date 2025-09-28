@@ -19,3 +19,6 @@ jobs:
           workdir: .
           repository_root: .
           command: buildozer android debug
+        env:
+          BUILDOZER_WARN_ON_ROOT: 0
+          USER: root   # 👈 هنا التغيير المهم
