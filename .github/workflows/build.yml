@@ -2,7 +2,8 @@ name: Build Kivy APK
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -12,14 +13,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build with Buildozer
-        uses: cphyc/buildozer-action@v1
+      - name: Build APK with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
-          command: buildozer -v android debug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: mykivyapp-apk
-          path: bin/*.apk
-
+          workdir: .
+          repository_root: .
+          command: buildozer android debug
