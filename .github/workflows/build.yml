@@ -15,8 +15,6 @@ jobs:
 
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
-        env:
-          USER: root
         with:
           command: buildozer android debug
 
