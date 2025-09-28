@@ -10,15 +10,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fix git config issue
-        run: git config --unset http.https://github.com/.extraheader || true
-
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        env:
-          USER: root
-        with:
-          command: buildozer android debug
+      - name: Build with Buildozer Docker
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/home/user/app \
+            kivy/buildozer:latest buildozer android debug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
