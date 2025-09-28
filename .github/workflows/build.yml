@@ -12,15 +12,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build with Buildozer (Docker)
-        run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/home/user/app \
-            kivy/buildozer:master \
-            buildozer -v android debug
+      - name: Build with Buildozer
+        uses: cphyc/buildozer-action@v1
+        with:
+          command: buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: mykivyapp-apk
           path: bin/*.apk
+
