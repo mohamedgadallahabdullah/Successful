@@ -7,14 +7,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. نسحب الكود من الريبو
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. نحل مشكلة extraheader لو ظهرت
+      - name: Fix git config issue
+        run: git config --unset http.https://github.com/.extraheader || true
+
+      # 3. نوقف BuildKit عشان يمنع خطأ unsupported media type
+      - name: Disable Docker BuildKit
+        run: echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
+
+      # 4. تشغيل buildozer من خلال Docker (بمستخدم root)
       - name: Build with Buildozer Docker
         run: |
-          docker run --rm -v ${{ github.workspace }}:/home/user/app \
+          docker run --rm \
+            -e USER=root \
+            -v ${{ github.workspace }}:/home/user/app \
             kivy/buildozer:latest buildozer android debug
 
+      # 5. رفع ملف APK كـ Artifact تقدر تحمله من صفحة Actions
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
